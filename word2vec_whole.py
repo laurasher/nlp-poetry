@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 
 # from tutorial https://machinelearningmastery.com/develop-word-embeddings-python-gensim/
 poems = ['ash_wednesday','dry_salvages','the_waste_land','east_coker','little_gidding','burnt_norton','choruses_from_the_rock','the_hollow_men']
+data = []
+temp = []
 
 for poem in poems:
   sample = open(f"./{poem}.txt", "r") 
@@ -23,11 +25,10 @@ for poem in poems:
   # Replaces escape character with space 
   f = s.replace("\n", " ") 
     
-  data = [] 
     
   # iterate through each sentence in the file 
   for i in sent_tokenize(f): 
-      temp = [] 
+      #temp = [] 
         
       # tokenize the sentence into words 
       for j in word_tokenize(i): 
@@ -35,37 +36,44 @@ for poem in poems:
     
       data.append(temp) 
 
-  sentences = data
+sentences = data
 
-  # train model
-  model = Word2Vec(sentences, min_count=1)
+# train model
+model = Word2Vec(sentences, min_count=1)
 
-  # summarize the loaded model
-  print(model)
+# summarize the loaded model
+print(model)
 
-  # summarize vocabulary
-  words = list(model.wv.vocab)
+# summarize vocabulary
+words = list(model.wv.vocab)
+print(words)
+#model.save('model.bin')
 
-  #model.save('model.bin')
+X = model[model.wv.vocab]
+pca = PCA(n_components=2)
+result = pca.fit_transform(X)
 
-  X = model[model.wv.vocab]
-  pca = PCA(n_components=2)
-  result = pca.fit_transform(X)
+plt.scatter(result[:, 0], result[:, 1])
 
-  plt.scatter(result[:, 0], result[:, 1])
+data_to_df = []
 
-  data_to_df = []
+for i, word in enumerate(words):
+  plt.annotate(word, xy=(result[i, 0], result[i, 1]))
+  print(f"RESULT {word} {result[i, 0], result[i, 1]}")
+  x_val = result[i, 0]
+  y_val = result[i, 1]
+  data_to_df.append([word, x_val, y_val])
 
-  for i, word in enumerate(words):
-    plt.annotate(word, xy=(result[i, 0], result[i, 1]))
-    print(f"RESULT {word} {result[i, 0], result[i, 1]}")
-    x_val = result[i, 0]
-    y_val = result[i, 1]
-    data_to_df.append([word, x_val, y_val])
+plt.show()
+df = pd.DataFrame(data_to_df, columns = ['Word', 'x_val', 'y_val'])
+df.to_csv(f'./whole/whole.csv')
 
-  #plt.show()
-  df = pd.DataFrame(data_to_df, columns = ['Word', 'x_val', 'y_val'])
-  df.to_csv(f'./whole/{poem}.csv')
+
+
+
+
+
+
 
 '''
 # Create CBOW model 
