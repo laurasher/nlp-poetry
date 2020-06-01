@@ -51,14 +51,26 @@ def style_plots(fig):
 
 
 # from tutorial https://machinelearningmastery.com/develop-word-embeddings-python-gensim/
-poems = ['ash_wednesday','dry_salvages','the_waste_land','east_coker','little_gidding','burnt_norton','choruses_from_the_rock','the_hollow_men']
+#poems = ['ash_wednesday','dry_salvages','the_waste_land','east_coker','little_gidding','burnt_norton','choruses_from_the_rock','the_hollow_men', 
+#'the_country_of_marriage', 'the_peace_of_wild_things', 'what_we_need_is_here', 'the_man_born_to_farming', 'sabbaths_2001', 'silence', 'the_wish_to_be_generous', 'water'
+#]
+poems = [
+'ash_wednesday','dry_salvages','the_waste_land','east_coker','little_gidding','burnt_norton','choruses_from_the_rock','the_hollow_men'
+]
 data = []
 temp = []
 nltk.download('stopwords')
 nltk.download("punkt")
 stop_words = set(stopwords.words('english')) 
 
+mode = 'svg'
+#mode = 'bokeh'
+
 for poem in poems:
+	data = []
+	temp = []
+	sentences = []
+	s = []
 	sample = open(f"./{poem}.txt", "r") 
 	s = sample.read() 
 
@@ -84,7 +96,6 @@ for poem in poems:
 
 	# summarize vocabulary
 	words = list(model.wv.vocab)
-	#print(words)
 	#model.save('model.bin')
 
 	X = model[model.wv.vocab]
@@ -95,73 +106,44 @@ for poem in poems:
 	###### Bokeh plot
 	source = ColumnDataSource(data=dict(x=result[:, 0], y=result[:, 1], word=words))
 	hover = HoverTool(tooltips=[
-	    ('', '@word'),
+	    ('', '@word')
 	])
 
-	p = figure(plot_width=300, plot_height=300, tools=['wheel_zoom', 'pan', hover])
-	p.circle('x', 'y', source=source, size=2, color="black", line_alpha = 0, alpha=0.5)
+	p = figure(plot_width=300, plot_height=300, tools=['wheel_zoom', 'pan', hover],
+		x_range=(-np.min(result[:, 0])*2.5, np.min(result[:, 0])*2), y_range=(-np.min(result[:, 1])*2, np.min(result[:, 1])*2.5))
 
-	'''
-	p = figure(plot_height=200, plot_width=200, title=f"{poem}",
-           toolbar_location=None, tools="")
-	p.circle(result[:, 0], result[:, 1], size=2, color="black", line_alpha = 0, alpha=0.5)
-	'''
+	if mode is 'svg':
+		p.circle('x', 'y', source=source, size=1, color='black', alpha=1,
+		line_color='black', line_width = 0.3, line_alpha = 0)
+
+	if mode is 'bokeh':
+		p.circle('x', 'y', source=source, size=2, color="black", line_alpha=0, alpha=0.5)
+		p.circle('x', 'y', source=source, size=5, color='black', alpha=0,
+			line_color='black', line_width = 0.2, line_alpha = 0)
+
 
 	p = style_plots(p)
-	#p.add_tools(WheelZoomTool())
 	p.toolbar.active_scroll = p.select_one(WheelZoomTool)
 	data_to_df = []
 
 	for i, word in enumerate(words):
-	  #plt.annotate(word, xy=(result[i, 0], result[i, 1]))
-	  #print(f"RESULT {word} {result[i, 0], result[i, 1]}")
 	  x_val = result[i, 0]
 	  y_val = result[i, 1]
 	  data_to_df.append([word, x_val, y_val])
 
-	#plt.show()
 	df = pd.DataFrame(data_to_df, columns = ['Word', 'x_val', 'y_val'])
 	df.to_csv(f'./individual_training/{poem}.csv')
 
-	#p.output_backend = "svg"
-	#export_svgs(p, filename=f"./individual_training/{poem}.svg")
 
-	#html = file_html(p, CDN, f"individual_training_{poem}")
-	plot_json = json.dumps(json_item(p, f"{poem}"))
-	f = open(f"./web/static/{poem}.json", "w")
-	print(f"Writing ./web/static/{poem}.json...")
-	#f = open(f"./web/static/{poem}.html", "w")
-	#print(f"Writing ./web/static/{poem}.html...")
-	f.write(plot_json)
-	f.close()
+	if mode is 'bokeh':
+		plot_json = json.dumps(json_item(p, f"{poem}"))
+		f = open(f"./web/static/{poem}.json", "w")
+		print(f"Writing ./web/static/{poem}.json...")
+		f.write(plot_json)
+		f.close()
 
+	if mode is 'svg':
+		p.output_backend = "svg"
+		export_svgs(p, filename=f"./individual_training/{poem}.svg")
+		print(f"Writing ./individual_training/{poem}.svg...")
 
-
-
-'''
-# Create CBOW model 
-model1 = gensim.models.Word2Vec(data, min_count = 1,  
-                              size = 100, window = 5) 
-  
-# Print results 
-print("Cosine similarity between 'alice' " + 
-               "and 'wonderland' - CBOW : ", 
-    model1.similarity('hope', 'power')) 
-      
-print("Cosine similarity between 'alice' " +
-                 "and 'machines' - CBOW : ", 
-      model1.similarity('hope', 'power')) 
-  
-# Create Skip Gram model 
-model2 = gensim.models.Word2Vec(data, min_count = 1, size = 100, 
-                                             window = 5, sg = 1) 
-  
-# Print results 
-print("Cosine similarity between 'alice' " +
-          "and 'wonderland' - Skip Gram : ", 
-    model2.similarity('hope', 'power')) 
-      
-print("Cosine similarity between 'alice' " +
-            "and 'machines' - Skip Gram : ", 
-      model2.similarity('hope', 'power')) 
-'''
