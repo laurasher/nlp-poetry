@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>T.S. Eliot</title>
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://cdn.pydata.org/bokeh/release/bokeh-2.0.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/noframework.waypoints.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400&display=swap" rel="stylesheet">
+</head>
+
+<style>
+body {
+  font: 10px sans-serif;
+}
+
+rect {
+  stroke: #fff;
+}
+
+svg {
+  shape-rendering: crispEdges;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: 300px 300px 300px 300px;
+  /*background-color: #2196F3;*/
+  width: 1200px;
+  margin: auto;
+  /*margin-top: 5%;*/
+}
+
+.grid-item {
+  /*background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.8);*/
+  text-align: center;
+}
+
+p{
+ 
+}
+#title{
+  font-size: 20px;
+  margin-left: 200px;
+  margin-top: 80px;
+  padding-bottom: : 50px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: lighter;
+  text-decoration: none;
+  color: black;
+}
+a{
+  font-size: 12px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: lighter;
+  text-decoration: none;
+  color: black;
+}
+</style>
+
+<body>
+  <div id = 'title'>
+    <p>T.S. Eliot</p>
+  </div>
+  <script>
+    poems = ['ash_wednesday','dry_salvages','the_waste_land','east_coker','little_gidding','burnt_norton','choruses_from_the_rock','the_hollow_men']
+    poems.forEach(function(poem){
+      console.log(poem)
+      $.ajax({
+          type: 'GET',
+          url: './get_'+poem,
+          dataType : 'json',
+          success: function(data) {
+            Bokeh.embed.embed_item(data);
+            return data
+          }
+        });
+    })
+    </script> 
+     <div class="grid-container">
+      <div class="grid-item" id="ash_wednesday"></div>
+      <div class="grid-item" id="the_hollow_men"></div>
+      <div class="grid-item" id="the_waste_land"></div>
+      <div class="grid-item" id="east_coker"></div>
+      <div class="grid-item" id="little_gidding"></div>
+      <div class="grid-item" id="dry_salvages"></div>
+      <div class="grid-item" id="burnt_norton"></div>
+      <div class="grid-item" id="choruses_from_the_rock"></div>
+    </div> 
+        
+</body>

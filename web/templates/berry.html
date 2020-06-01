@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Wendell Berry</title>
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://cdn.pydata.org/bokeh/release/bokeh-2.0.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/noframework.waypoints.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400&display=swap" rel="stylesheet">
+</head>
+
+<style>
+body {
+  font: 10px sans-serif;
+}
+
+rect {
+  stroke: #fff;
+}
+
+svg {
+  shape-rendering: crispEdges;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: 300px 300px 300px 300px;
+  width: 1200px;
+  margin: auto;
+}
+
+.grid-item {
+  text-align: center;
+}
+
+p{
+ 
+}
+#title{
+  font-size: 20px;
+  margin-left: 200px;
+  margin-top: 80px;
+  padding-bottom: : 50px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: lighter;
+  text-decoration: none;
+  color: black;
+}
+a{
+  font-size: 12px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: lighter;
+  text-decoration: none;
+  color: black;
+}
+</style>
+
+<body>
+  <div id = 'title'>
+    <a href={{ url_for('home') }}> < back </a> <p>Wendell Berry</p>
+  </div>
+  <script>
+    poems = ['the_peace_of_wild_things', 'the_country_of_marriage', 'what_we_need_is_here', 'the_man_born_to_farming', 'sabbaths_2001', 'silence',
+    'the_wish_to_be_generous', 'water']
+    poems.forEach(function(poem){
+      console.log(poem)
+      $.ajax({
+          type: 'GET',
+          url: './get_'+poem,
+          dataType : 'json',
+          success: function(data) {
+            Bokeh.embed.embed_item(data);
+            return data
+          }
+        });
+    })
+    </script> 
+     <div class="grid-container">
+      <div class="grid-item" id="the_peace_of_wild_things"></div>
+      <div class="grid-item" id="the_country_of_marriage"></div>
+      <div class="grid-item" id="what_we_need_is_here"></div>
+      <div class="grid-item" id="the_man_born_to_farming"></div>
+      <div class="grid-item" id="sabbaths_2001"></div>
+      <div class="grid-item" id="silence"></div>
+      <div class="grid-item" id="the_wish_to_be_generous"></div>
+      <div class="grid-item" id="water"></div>
+    </div>      
+</body>

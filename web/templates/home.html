@@ -20,54 +20,35 @@ rect {
 svg {
   shape-rendering: crispEdges;
 }
-.grid-container {
-  display: grid;
-  grid-template-columns: 300px 300px 300px 300px;
-  /*background-color: #2196F3;*/
-  width: 1200px;
-  margin: auto;
-  /*margin-top: 5%;*/
-}
-
-.grid-item {
-  /*background-color: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(0, 0, 0, 0.8);*/
-  text-align: center;
+a{
+  font-size: 40px;
+  /*margin-left: 300px;*/
+  font-family: 'Raleway', sans-serif;
+  font-weight: lighter;
+  text-decoration: none;
+  color: black;
 }
 
 p{
-  font-size: 32px;
-  margin-left: 300px;
-  margin-top: 100px;
+  font-size: 20px;
   font-family: 'Raleway', sans-serif;
+  font-weight: lighter;
+  color: black;
 }
+
+#poet-links-container{
+  margin-top: 40%;
+  margin-left: 10%;
+}
+
 </style>
 
 <body>
-  <p>Eliot</p>
-  <script>
-    poems = ['ash_wednesday','dry_salvages','the_waste_land','east_coker','little_gidding','burnt_norton','choruses_from_the_rock','the_hollow_men']
-    poems.forEach(function(poem){
-      console.log(poem)
-      $.ajax({
-          type: 'GET',
-          url: './get_'+poem,
-          dataType : 'json',
-          success: function(data) {
-            Bokeh.embed.embed_item(data);
-            return data
-          }
-        });
-    })
-    </script> 
-     <div class="grid-container">
-      <div class="grid-item" id="ash_wednesday"></div>
-      <div class="grid-item" id="the_hollow_men"></div>
-      <div class="grid-item" id="the_waste_land"></div>
-      <div class="grid-item" id="east_coker"></div>
-      <div class="grid-item" id="little_gidding"></div>
-      <div class="grid-item" id="dry_salvages"></div>
-      <div class="grid-item" id="burnt_norton"></div>
-      <div class="grid-item" id="choruses_from_the_rock"></div>
-    </div>      
+  <div id="poet-links-container">
+    <a href={{ url_for('eliot') }}>T.S. Eliot</a>
+    <a href={{ url_for('berry') }} style="margin-left: 20px;">| Wendell Berry</a>
+    <!--<a href={{ url_for('eliot') }} style="margin-left: 20px;">| Gerard Manley Hopkins</a>-->
+    <!--<a href={{ url_for('eliot') }} style="margin-left: 20px;">| William Blake</a>-->
+    <p>Every word is a universe unto itself.</p>
+  </div>
 </body>
