@@ -77,8 +77,11 @@
       vertical-align: center;    
   }
   svg {
-    display: block;
-    margin: 0 auto;
+    /*display: block;*/
+    position: absolute;
+    margin-left: 40%;
+    margin-top: 20%;
+    /*margin: 0 auto;*/
     /*border: yellowgreen;
     border-style: dashed;*/
   }
@@ -89,8 +92,7 @@
 <body>
 <p id="title">ash wednesday</p>
 <div id="vis"></div>
-<div class="append-yellow"></div>
-<div class="append-yellow"></div>
+<div id="svg-vis"></div>
 
 <script>
   var margin = { top: 20, right: 10, bottom: 50, left: 100 },
@@ -112,6 +114,9 @@
       };
   }
 
+  function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+  }
 
   // Define the div for the tooltip
   var div = d3.select("body").append("div") 
@@ -125,30 +130,51 @@
 
       //////////////////////// external svg ///////////////////////////////////////
       // Programmatically define div
-      for (i=0; i < n; i++){
+      /*for (i=0; i < n; i++){
         d3.select("body")
             .append("div")
             .attr("class", "yellow-line-div");
-      }
+      }*/
       // Programmatically load svgs
       d3.xml("./static/shape_elements/yellow_line.svg").mimeType("image/svg+xml").get(function(error, xml) {
         if (error) throw error;
 
         //d3.selectAll(".yellow-line-div").nodes().forEach(n => {
           var svgNode = xml.getElementsByTagName("svg")[0];
-          svgNode.style.height= "10px";
           //n.appendChild(svgNode.cloneNode(true))
         //})
-        d3.select("body").select("#yellow-line-div")
+        scale = 23000
+        d3.select("#svg-vis")
                   //.selectAll("star")
                   .data(data)
                   .enter()
                   .append("svg")
                   .attr("width",20)
                   .attr("height",20)
+                  .attr("transform", function (d) {
+                    rot_scale = 2500
+                    size_scale = 15
+                    rot = getRandomInt(rot_scale*y_max)
+                    size = getRandomInt(size_scale)/12 + 1
+                    //return "scale(" + size + ") rotate(" + rot + ") translate(" + scale*d.x_val + "," + scale*d.y_val + ")"
+                    return "translate(" + scale*d.x_val + "," + scale*d.y_val + ")"
+                  })
                   .each(function (d) {
                       this.appendChild(svgNode.cloneNode(true));
-                  });
+                  })
+                  .on("mouseover", function(d) {    
+                    div.transition()    
+                        .duration(200)    
+                        .style("opacity", .9);    
+                    div .html(d.word + "<br/>")  
+                        .style("left", (d3.event.pageX + 15) + "px")   
+                        .style("top", (d3.event.pageY - 15) + "px");  
+                    })          
+                .on("mouseout", function(d) {   
+                    div.transition()    
+                        .duration(500)    
+                        .style("opacity", 0);
+                    })
 
       });
 
@@ -178,6 +204,7 @@
         //.call(d3.axisLeft(y));
 
       // Add dots
+      /*
       svg.append('g')
         .selectAll("dot")
         .data(data)
@@ -200,6 +227,7 @@
                 .duration(500)    
                 .style("opacity", 0);
             })
+            */
   });
 
 
