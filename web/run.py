@@ -13,6 +13,26 @@ def home():
 def d3_experiment():
     return render_template("d3_experiment.html")
 
+@app.route('/d3_exp_ash_wednesday', methods=['GET'])
+def d3_exp_ash_wednesday():
+    return render_template("d3_exp_ash_wednesday.html")
+
+@app.route('/d3_exp_east_coker', methods=['GET'])
+def d3_exp_east_coker():
+    return render_template("d3_exp_east_coker.html")
+
+@app.route('/d3_exp_little_gidding', methods=['GET'])
+def d3_exp_little_gidding():
+    return render_template("d3_exp_little_gidding.html")
+
+@app.route('/d3_exp_burnt_norton', methods=['GET'])
+def d3_exp_burnt_norton():
+    return render_template("d3_exp_burnt_norton.html")
+
+@app.route('/d3_exp_dry_salvages', methods=['GET'])
+def d3_exp_dry_salvages():
+    return render_template("d3_exp_dry_salvages.html")
+
 @app.route('/eliot', methods=['GET'])
 def eliot():
 	return render_template("eliot.html")
@@ -155,4 +175,4 @@ def get_water():
         return data
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='127.0.0.1', port=8000)
