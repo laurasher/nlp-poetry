@@ -71,7 +71,7 @@ for poem in poems:
 	temp = []
 	sentences = []
 	s = []
-	sample = open(f"./{poem}.txt", "r") 
+	sample = open(f"./data/{poem}.txt", "r") 
 	s = sample.read() 
 
 	# Replaces escape character with space 

@@ -1,4 +1,14 @@
+poem portrait output/
+.ipynb_checkpoints/
+__pycache__/
 *.csv
 *.svg
+*.png
 web/.DS_Store
 .DS_Store
+*.bin
+design documents/
+individual_training/
+*.rtf
+notes
+data/

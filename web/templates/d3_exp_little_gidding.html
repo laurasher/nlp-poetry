@@ -16,15 +16,12 @@
       --mobility-button-height: 1.6vw;
       --selector-button-height: 1.3vw;
     }
-
     body {
       font-family:"avenir next", Arial, sans-serif;
       font-size: var(--responsive-font-size);
       color: black;
-      /*background: #09008c;*/
       background: #07006b;
     }
-
     input:focus {
       outline:none;
     }
@@ -45,25 +42,12 @@
       /*margin-top: var(--leading-title);
       margin-left: var(--left);*/
     }
-    #mobility-buttons{
-      margin-left: var(--left);
-    }
-    #play-button-container{
-      margin-left: var(--left);
-      margin-top: var(--leading);
-    }
     #text{
       color: white;
       display: inline-block;
       margin-left: var(--left);
       margin-bottom: var(--leading);
       width: var(--responsive-container-width);
-    }
-    #loading-icon{
-      margin-left: 40%;
-      margin-top: 60%;
-      font-size: 20px;
-      color: white;
     }
     div.tooltip { 
       position: absolute;     
@@ -92,7 +76,7 @@
 </head>
 
 <body>
-<p id="title">poems overlaid</p> 
+<p id="title">little gidding</p> 
 <div id="vis"></div>
 <div id="svg-vis"></div>
 
@@ -125,15 +109,16 @@
       .attr("class", "tooltip")       
       .style("opacity", 0);
 
-  var op = 0.98
-  d3.csv('./static/csv/east_coker.csv', row, function(error, data) {
+  var op = 0.9
+
+    d3.csv('./static/csv/little_gidding.csv', row, function(error, data) {
       if (error) throw error;
       console.log(data)
       var n = data.length
 
       //////////////////////// external svg ///////////////////////////////////////
       // Programmatically load svgs
-      d3.xml("./static/shape_elements/yellow_line.svg").mimeType("image/svg+xml").get(function(error, xml) {
+      d3.xml("./static/shape_elements/white_line.svg").mimeType("image/svg+xml").get(function(error, xml) {
         if (error) throw error;
 
         //d3.selectAll(".yellow-line-div").nodes().forEach(n => {
@@ -228,115 +213,5 @@
             */
   });
 
-  d3.csv('./static/csv/ash_wednesday.csv', row, function(error, data) {
-      if (error) throw error;
-      console.log(data)
-      var n = data.length
-
-      //////////////////////// external svg ///////////////////////////////////////
-      // Programmatically define div
-      /*for (i=0; i < n; i++){
-        d3.select("body")
-            .append("div")
-            .attr("class", "yellow-line-div");
-      }*/
-      // Programmatically load svgs
-      d3.xml("./static/shape_elements/white_line.svg").mimeType("image/svg+xml").get(function(error, xml) {
-        if (error) throw error;
-
-        //d3.selectAll(".yellow-line-div").nodes().forEach(n => {
-          let svgNode = xml.getElementsByTagName("svg")[0];
-          //n.appendChild(svgNode.cloneNode(true))
-        //})
-        scale = 23000
-        //scale = 20000
-        d3.select("#svg-vis")
-                  //.selectAll("star")
-                  .data(data)
-                  .enter()
-                  .append("svg")
-                  .attr("width",20)
-                  .attr("height",20)
-                  .style("opacity", op)
-                  .attr("transform", function (d) {
-                    rot_scale = 2500
-                    size_scale = 15
-                    rot = getRandomInt(rot_scale*y_max)
-                    size = getRandomInt(size_scale)/12 + 1
-                    //return "scale(" + size + ") rotate(" + rot + ") translate(" + scale*d.x_val + "," + scale*d.y_val + ")"
-                    return "rotate(" + scale*d.x_val + ") translate(" + scale*d.y_val + "," + scale*d.y_val + ")"
-                    //return "translate(" + scale*d.x_val + "," + scale*d.y_val + ")"
-                  })
-                  .each(function (d) {
-                      this.appendChild(svgNode.cloneNode(true));
-                  })
-                  .on("mouseover", function(d) {    
-                    div.transition()    
-                        .duration(200)    
-                        .style("opacity", .9);    
-                    div .html(d.word + "<br/>")  
-                        .style("left", (d3.event.pageX + 15) + "px")   
-                        .style("top", (d3.event.pageY - 15) + "px");  
-                    })          
-                .on("mouseout", function(d) {   
-                    div.transition()    
-                        .duration(500)    
-                        .style("opacity", 0);
-                    })
-
-      });
-
-      //////////////////////// external svg ///////////////////////////////////////
-
-      x_min = Math.min.apply(Math, data.map(x => x.x_val));
-      x_max = Math.max.apply(Math, data.map(x => x.x_val));
-      y_min = Math.min.apply(Math, data.map(x => x.y_val));
-      y_max = Math.max.apply(Math, data.map(x => x.y_val));
-
-
-      // Scatterplot
-      // Add X axis
-      var x = d3.scaleLinear()
-        .domain([x_min, x_max])
-        .range([ 0, width ]);
-      svg.append("g")
-        .attr("transform", "translate(0," + height + ")")
-        //.call(d3.axisBottom(x));
-
-      // Add Y axis
-      var y = d3.scaleLinear()
-        .domain([y_min, y_max])
-        .range([ height, 0]);
-      svg.append("g")
-        //.call(d3.axisLeft(y));
-
-      // Add dots
-      /*
-      svg.append('g')
-        .selectAll("dot")
-        .data(data)
-        .enter()
-        .append("circle")
-          .attr("cx", function (d) { return x(d.x_val); } )
-          .attr("cy", function (d) { return y(d.y_val); } )
-          .attr("r",  .7)
-          .style("fill", "#69b3a2")
-        .on("mouseover", function(d) {    
-            div.transition()    
-                .duration(200)    
-                .style("opacity", .9);    
-            div .html(d.word + "<br/>")  
-                .style("left", (d3.event.pageX + 15) + "px")   
-                .style("top", (d3.event.pageY - 15) + "px");  
-            })          
-        .on("mouseout", function(d) {   
-            div.transition()    
-                .duration(500)    
-                .style("opacity", 0);
-            })
-            */
-  });
-
-  
 </script>
 </body>
