@@ -1,0 +1,4 @@
+*.csv
+*.svg
+web/.DS_Store
+.DS_Store
