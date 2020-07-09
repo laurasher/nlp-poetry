@@ -14,6 +14,9 @@ from bokeh.embed import file_html, json_item
 # importing all necessary modules 
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
+from nltk.corpus import wordnet as wn
+from nltk.stem import WordNetLemmatizer
+
 import warnings 
 import nltk
 import pandas as pd
@@ -41,8 +44,10 @@ def style_plots(fig):
     fig.yaxis.visible = False
     fig.xaxis.visible = False
     fig.title.text_font_size = "9pt"
-    fig.title.text_font_style = "normal"
-    fig.title.visible = None
+    fig.title.text_font_style = "bold"
+    fig.title.text_color = "#394d7e"
+    #fig.title.text_align = "middle"
+    #fig.title.visible = None
     fig.yaxis.major_label_text_color = 'white'
     fig.xaxis.major_label_text_color = 'white'
     fig.xaxis.major_label_text_font_size = '14pt'
@@ -54,17 +59,23 @@ def style_plots(fig):
 #poems = ['ash_wednesday','dry_salvages','the_waste_land','east_coker','little_gidding','burnt_norton','choruses_from_the_rock','the_hollow_men', 
 #'the_country_of_marriage', 'the_peace_of_wild_things', 'what_we_need_is_here', 'the_man_born_to_farming', 'sabbaths_2001', 'silence', 'the_wish_to_be_generous', 'water'
 #]
-poems = [
-'ash_wednesday','dry_salvages','the_waste_land','east_coker','little_gidding','burnt_norton','choruses_from_the_rock','the_hollow_men'
-]
+poems = ['ash_wednesday','dry_salvages','the_waste_land','east_coker','little_gidding','burnt_norton',
+'choruses_from_the_rock','the_hollow_men','gerontion','animula','portrait_of_a_lady','whispers_of_immortality']
+pub_year_df = pd.read_csv(f'./data/poem_pub_year.csv')
+
 data = []
 temp = []
-nltk.download('stopwords')
-nltk.download("punkt")
-stop_words = set(stopwords.words('english')) 
+#nltk.download('stopwords')
+#nltk.download("punkt")
 
-mode = 'svg'
-#mode = 'bokeh'
+stop_words = set(stopwords.words('english'))
+ignore_words = ['u', 'man', 'dead', 'iii', 'ii', 'iv', 'v', 'ha', 'wa']
+
+
+#mode = 'svg'
+mode = 'bokeh'
+
+total_words = []
 
 for poem in poems:
 	data = []
@@ -81,9 +92,17 @@ for poem in poems:
 	for i in sent_tokenize(f): 
 	 	# tokenize the sentence into words 
 	 	for j in word_tokenize(i):
-	 		if j.isalnum() and not j.lower() in stop_words:
-	 			temp.append(j.lower()) 
-	 	data.append(temp) 
+	 		j = j.lower()
+	 		stems = wn._morphy(j, wn.NOUN)
+	 		if len(stems) >= 1:
+	 			j = stems[0]
+	 		if j.isalnum() and not j.lower() in stop_words and j not in ignore_words:
+	 			temp.append(j)
+	 			total_words.append(j)
+	 		#if j.isalnum() and not j.lower() in stop_words:
+	 		#	temp.append(j.lower()) 
+	 	data.append(temp)
+
 
 	sentences = data
 
@@ -102,14 +121,24 @@ for poem in poems:
 	pca = PCA(n_components=2)
 	result = pca.fit_transform(X)
 
+	word_search_list = ['water','flower','desert','shrubbery','tree','juniper','daffodil','hyacinth']
+
+	words_df = pd.DataFrame({'words': words, 'color': '#394d7e', 'size': 2})
+	
+	#words_df.loc[words_df['words'].str.contains('|'.join(word_search_list)), 'color'] = '#cf6233'
+	words_df.loc[words_df['words'].str.contains('|'.join(word_search_list)), 'color'] = '#5D7D2C'
+	words_df.loc[words_df['words'].str.contains('|'.join(word_search_list)), 'size'] = 20
 
 	###### Bokeh plot
-	source = ColumnDataSource(data=dict(x=result[:, 0], y=result[:, 1], word=words))
+	source = ColumnDataSource(data=dict(x=result[:, 0], y=result[:, 1], word=words, 
+		fill=list(words_df['color']), size=list(words_df['size'])))
 	hover = HoverTool(tooltips=[
 	    ('', '@word')
 	])
 
-	p = figure(plot_width=300, plot_height=300, tools=['wheel_zoom', 'pan', hover],
+	p = figure(plot_width=300, plot_height=300, #tools=['wheel_zoom', 'pan', hover],
+		tools=[hover],
+		title=f"{poem.replace('_', ' ')}, {pub_year_df.loc[pub_year_df['poem_title']==poem, 'pub_year'].values[0]}",
 		x_range=(-np.min(result[:, 0])*2.5, np.min(result[:, 0])*2), y_range=(-np.min(result[:, 1])*2, np.min(result[:, 1])*2.5))
 
 	if mode is 'svg':
@@ -117,7 +146,8 @@ for poem in poems:
 		line_color='black', line_width = 0.3, line_alpha = 0)
 
 	if mode is 'bokeh':
-		p.circle('x', 'y', source=source, size=2, color="black", line_alpha=0, alpha=0.5)
+		p.circle('x', 'y', source=source, #size=2, color="black",
+			color= 'fill', size = 'size', line_alpha=0, alpha=0.6)
 		p.circle('x', 'y', source=source, size=5, color='black', alpha=0,
 			line_color='black', line_width = 0.2, line_alpha = 0)
 
@@ -147,3 +177,27 @@ for poem in poems:
 		export_svgs(p, filename=f"./individual_training/{poem}.svg")
 		print(f"Writing ./individual_training/{poem}.svg...")
 
+total_words = set(total_words)
+print(f"Total unique words in this corpus {len(total_words)}")
+json_out = []
+num_cols = 48
+num_rows = math.ceil(len(total_words)/num_cols)
+col_count = 0
+row_count = 0
+
+for word in total_words:
+	if row_count >= num_rows:
+		row_count = 0
+		col_count = col_count+1
+
+	json_out.append({
+		'word': word,
+		'col': col_count,
+		'row': row_count
+		})
+	row_count = row_count+1
+
+print(json.dumps(json_out))
+with open(f'./web/static/all_words.json', 'w') as outfile:
+        json.dump(json_out, outfile)
+        outfile.close()

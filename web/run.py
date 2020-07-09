@@ -40,6 +40,10 @@ def eliot():
 @app.route('/berry', methods=['GET'])
 def berry():
 	return render_template("berry.html")
+
+@app.route('/all_words', methods=['GET'])
+def all_words():
+    return render_template("all_words.html")
 '''
 @app.route('/favicon.ico') 
 def favicon(): 
@@ -110,6 +114,38 @@ def get_the_hollow_men():
         	data = json.load(f)
         return data
 
+@app.route("/get_gerontion", methods=["GET"])
+def get_gerontion():
+    if request.method == "GET":
+        filename = os.path.join(app.static_folder, 'gerontion.json')
+        with open(filename) as f:
+            data = json.load(f)
+        return data
+
+@app.route("/get_animula", methods=["GET"])
+def get_animula():
+    if request.method == "GET":
+        filename = os.path.join(app.static_folder, 'animula.json')
+        with open(filename) as f:
+            data = json.load(f)
+        return data
+
+@app.route("/get_whispers_of_immortality", methods=["GET"])
+def get_whispers_of_immortality():
+    if request.method == "GET":
+        filename = os.path.join(app.static_folder, 'whispers_of_immortality.json')
+        with open(filename) as f:
+            data = json.load(f)
+        return data
+
+@app.route("/get_portrait_of_a_lady", methods=["GET"])
+def get_portrait_of_a_lady():
+    if request.method == "GET":
+        filename = os.path.join(app.static_folder, 'portrait_of_a_lady.json')
+        with open(filename) as f:
+            data = json.load(f)
+        return data
+
 @app.route("/get_the_peace_of_wild_things", methods=["GET"])
 def get_the_peace_of_wild_things():
     if request.method == "GET":
@@ -175,4 +211,4 @@ def get_water():
         return data
 
 if __name__ == '__main__':
-    app.run(debug=True, host='127.0.0.1', port=8000)
+    app.run(debug=True, host='127.0.0.1', port=5000)
