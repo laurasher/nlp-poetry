@@ -60,15 +60,20 @@
       text-align: center;
       vertical-align: center;    
   }
-  svg {
-    /*display: block;
-    position: absolute;
-    margin-left: 40%;
-    margin-top: 20%;*/
-    /*margin: 0 auto;*/
-    /*border: yellowgreen;
-    border-style: dashed;*/
-  }
+
+div.tooltip { 
+    position: absolute;     
+    text-align: center;     
+    width: 60px;          
+    height: 28px;         
+    padding: 2px;       
+    font: 12px sans-serif;    
+    background: white; 
+    border: 0px;    
+    border-radius: 8px;     
+    pointer-events: none;     
+}
+
 
   </style>
 </head>
@@ -115,13 +120,29 @@
       dots.enter()
         .append("circle")
           .attr("class", "scatterdot")
-          .attr("r", 3)
+          .attr("r", function (d, i) { return d.count; })
           .style('fill', 'lightgray')
-          .style('stroke', 'darkgray')
-          .style("opacity", 0.9)
+          //.style('stroke', 'darkgray')
+          .style("opacity", 0.5)
           .attr("cx", function (d, i) { return x(d.col); } )
           .attr("cy", function (d, i) { return y(d.row); } )
-
+        .on("mouseover", function(d) { 
+            d3.select(this)
+              .style('stroke', 'darkgray');   
+            div.transition()    
+                .duration(200)    
+                .style("opacity", .9);    
+            div .html("<b>" + d.word + "</b><br/>"  + d.count)  
+                .style("left", (d3.event.pageX) + "px")   
+                .style("top", (d3.event.pageY - 28) + "px");  
+            })          
+        .on("mouseout", function(d) {
+            d3.select(this)
+              .style('stroke', 'none'); 
+            div.transition()    
+                .duration(500)    
+                .style("opacity", 0); 
+        });
   });
 
 </script>

@@ -177,15 +177,15 @@ for poem in poems:
 		export_svgs(p, filename=f"./individual_training/{poem}.svg")
 		print(f"Writing ./individual_training/{poem}.svg...")
 
-total_words = set(total_words)
-print(f"Total unique words in this corpus {len(total_words)}")
+total_words_unique = set(total_words)
+print(f"Total unique words in this corpus {len(total_words_unique)}")
 json_out = []
-num_cols = 48
-num_rows = math.ceil(len(total_words)/num_cols)
+num_cols = 63
+num_rows = math.ceil(len(total_words_unique)/num_cols)
 col_count = 0
 row_count = 0
 
-for word in total_words:
+for word in total_words_unique:
 	if row_count >= num_rows:
 		row_count = 0
 		col_count = col_count+1
@@ -193,7 +193,8 @@ for word in total_words:
 	json_out.append({
 		'word': word,
 		'col': col_count,
-		'row': row_count
+		'row': row_count,
+		'count': total_words.count(word)
 		})
 	row_count = row_count+1
 
