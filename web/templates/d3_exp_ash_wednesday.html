@@ -21,7 +21,9 @@
       font-family:"avenir next", Arial, sans-serif;
       font-size: var(--responsive-font-size);
       color: black;
-      background: #0f0f60;
+      /*background: #0f0f60;
+      */
+      background: #f8f0e4;
     }
 
     input:focus {
@@ -126,7 +128,7 @@
             .attr("class", "yellow-line-div");
       }*/
       // Programmatically load svgs
-      d3.xml("./static/shape_elements/thick_white_line.svg").mimeType("image/svg+xml").get(function(error, xml) {
+      d3.xml("./static/shape_elements/yellow_line.svg").mimeType("image/svg+xml").get(function(error, xml) {
         if (error) throw error;
 
         //d3.selectAll(".yellow-line-div").nodes().forEach(n => {

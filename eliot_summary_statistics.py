@@ -50,9 +50,11 @@ def style_plots(fig):
 lemmatizer = WordNetLemmatizer() 
 
 # from tutorial https://machinelearningmastery.com/develop-word-embeddings-python-gensim/
-poems = ['ash_wednesday','dry_salvages','the_waste_land','east_coker','little_gidding','burnt_norton','choruses_from_the_rock','the_hollow_men']
-pub_year_df = pd.read_csv(f'./data/eliot_poetry_year.csv')
+poems = ['ash_wednesday','dry_salvages','the_waste_land','east_coker','little_gidding','burnt_norton',
+'choruses_from_the_rock','the_hollow_men','gerontion','animula','portrait_of_a_lady','whispers_of_immortality']
+pub_year_df = pd.read_csv(f'./data/poem_pub_year.csv')
 
+print(pub_year_df)
 #nltk.download('stopwords')
 #nltk.download("punkt")
 #nltk.download('wordnet')
@@ -101,6 +103,8 @@ print(f"num unique words: {len(uniques)}")
 
 n = 20
 print(f"top 20 words: {df['word'].value_counts()[:n].index.tolist()}")
+df['count'] = df.groupby('word')['word'].transform('count')
+df.to_csv(f'./data/eliot_summary_stats.csv', index=False)
 
 ###### Bokeh plot
 '''

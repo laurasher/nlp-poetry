@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <style>
+    :root {
+      --left: 7%;
+      --leading: 1%;
+      --leading-title: 3%;
+      --responsive-font-size: 0.75vw;
+      --responsive-font-size-title: 1.3vw;
+      --responsive-font-size-buttons: 0.65vw;
+      --responsive-container-width: 75%;
+      --mobility-button-height: 1.6vw;
+      --selector-button-height: 1.3vw;
+    }
+    body {
+      font: 10px sans-serif;
+      background: #f8f0e4;
+    }
+    input:focus {
+      outline:none;
+    }
+
+    #title{
+      /*font-size: 36px;*/
+      font-size: var(--responsive-font-size-title);
+      font-family:"avenir next", Arial, sans-serif;
+      margin-bottom: var(--leading);
+      padding-top: var(--leading-title);
+      text-align: center;
+      color: white;
+    }
+    #vis{
+      /*float: left;*/
+      display: block;
+      width: var(--responsive-container-width);
+      /*margin-top: var(--leading-title);
+      margin-left: var(--left);*/
+    }
+    #text{
+      color: white;
+      display: inline-block;
+      margin-left: var(--left);
+      margin-bottom: var(--leading);
+      width: var(--responsive-container-width);
+    }
+    div.tooltip { 
+      position: absolute;     
+      text-align: center;     
+      width: auto;          
+      height: auto;         
+      font: 12px sans-serif; 
+      color: black;   
+      background: white;
+      border: 0px;    
+      pointer-events: none;
+      text-align: center;
+      vertical-align: center;    
+  }
+  svg {
+    /*display: block;
+    position: absolute;
+    margin-left: 40%;
+    margin-top: 20%;*/
+    /*margin: 0 auto;*/
+    /*border: yellowgreen;
+    border-style: dashed;*/
+  }
+
+  </style>
+</head>
+
+<body>
+<div id="vis"></div>
+<div id="svg-vis"></div>
+
+<script>
+  var margin = { top: 10, right: 10, bottom: 10, left: 10 },
+    width = 1500 - margin.left - margin.right,
+    height = 900 - margin.top - margin.bottom;
+
+
+  var svg = d3.select('body').append('svg')
+          .attr('width', width + margin.left + margin.right)
+          .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+          .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+
+  // Define the div for the tooltip
+  var div = d3.select("body").append("div") 
+      .attr("class", "tooltip")       
+      .style("opacity", 0);
+
+  d3.json('./static/all_words.json', function(data) {
+      console.log(data)
+
+      var x = d3.scaleLinear()
+        .domain([0, d3.max(data, function(d) { return d.col;}) ])
+        .range([ 0, width ])
+
+      var y = d3.scaleLinear()
+        .domain([d3.max(data, function(d) { return d.row;}), 0])
+        .range([ 0, height]);
+
+      var plot = svg.append("g")
+        .attr("class", "plot")
+
+      var dots = plot.selectAll(".scatterdot")
+        .data(data);
+
+      dots.enter()
+        .append("circle")
+          .attr("class", "scatterdot")
+          .attr("r", 3)
+          .style('fill', 'lightgray')
+          .style('stroke', 'darkgray')
+          .style("opacity", 0.9)
+          .attr("cx", function (d, i) { return x(d.col); } )
+          .attr("cy", function (d, i) { return y(d.row); } )
+
+  });
+
+</script>
+</body>

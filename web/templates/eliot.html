@@ -11,6 +11,7 @@
 <style>
 body {
   font: 10px sans-serif;
+  background: #f8f0e4;
 }
 
 rect {
@@ -62,7 +63,19 @@ a{
     <p>T.S. Eliot</p>
   </div>
   <script>
-    poems = ['ash_wednesday','dry_salvages','the_waste_land','east_coker','little_gidding','burnt_norton','choruses_from_the_rock','the_hollow_men']
+    poems = ['the_waste_land',
+            'the_hollow_men',
+            'ash_wednesday',
+            'dry_salvages',
+            'burnt_norton',
+            'east_coker',
+            'little_gidding',
+            'choruses_from_the_rock',
+            'gerontion',
+            'animula',
+            'portrait_of_a_lady',
+            'whispers_of_immortality']
+
     poems.forEach(function(poem){
       console.log(poem)
       $.ajax({
@@ -77,14 +90,18 @@ a{
     })
     </script> 
      <div class="grid-container">
-      <div class="grid-item" id="ash_wednesday"></div>
-      <div class="grid-item" id="the_hollow_men"></div>
+      <div class="grid-item" id="portrait_of_a_lady"></div>
+      <div class="grid-item" id="whispers_of_immortality"></div>
+      <div class="grid-item" id="gerontion"></div>
       <div class="grid-item" id="the_waste_land"></div>
-      <div class="grid-item" id="east_coker"></div>
-      <div class="grid-item" id="little_gidding"></div>
-      <div class="grid-item" id="dry_salvages"></div>
-      <div class="grid-item" id="burnt_norton"></div>
+      <div class="grid-item" id="the_hollow_men"></div>
+      <div class="grid-item" id="animula"></div>
+      <div class="grid-item" id="ash_wednesday"></div>
       <div class="grid-item" id="choruses_from_the_rock"></div>
+      <div class="grid-item" id="burnt_norton"></div>
+      <div class="grid-item" id="east_coker"></div>
+      <div class="grid-item" id="dry_salvages"></div>
+      <div class="grid-item" id="little_gidding"></div>
     </div> 
         
 </body>

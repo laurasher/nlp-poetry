@@ -21,8 +21,10 @@
       font-family:"avenir next", Arial, sans-serif;
       font-size: var(--responsive-font-size);
       color: black;
-      /*background: #09008c;*/
+      /*background: #09008c;
       background: #07006b;
+      background: #F8F1E4;*/
+      background: #f8f0e4;
     }
 
     input:focus {
@@ -79,27 +81,26 @@
       vertical-align: center;    
   }
   svg {
-    /*display: block;*/
-    position: absolute;
-    margin-left: 40%;
-    margin-top: 20%;
-    /*margin: 0 auto;*/
-    /*border: yellowgreen;
-    border-style: dashed;*/
+    margin-left: 32%;
+    margin-top: 6%;
   }
 
   </style>
 </head>
 
 <body>
-<p id="title">poems overlaid</p> 
 <div id="vis"></div>
 <div id="svg-vis"></div>
 
 <script>
-  var margin = { top: 60, right: 10, bottom: 50, left: 100 },
-    width = 200 - margin.left - margin.right,
-    height = 200 - margin.top - margin.bottom;
+  var margin = { top: 0, right: 0, bottom: 10, left: 0 },
+    width = 600 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
+
+  var vertical_vis_spacing = 100;
+  var radial_scale_factor = 1.1;
+  var dot_radius = 2;
+  var dot_fill = "#3A4C7D";
 
 
   var svg = d3.select('body').append('svg')
@@ -107,6 +108,24 @@
           .attr('height', height + margin.top + margin.bottom)
       .append('g')
           .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+  var svg2 = d3.select('body').append('svg')
+          .attr('width', width + margin.left + margin.right)
+          .attr('height', height + margin.top + margin.bottom)
+          .attr('transform', 'translate(' + margin.left + ',' + vertical_vis_spacing + ')')
+      .append('g')
+
+  var svg3 = d3.select('body').append('svg')
+          .attr('width', width + margin.left + margin.right)
+          .attr('height', height + margin.top + margin.bottom)
+          .attr('transform', 'translate(' + margin.left + ',' + vertical_vis_spacing + ')')
+      .append('g')
+
+  var svg4 = d3.select('body').append('svg')
+          .attr('width', width + margin.left + margin.right)
+          .attr('height', height + margin.top + margin.bottom)
+          .attr('transform', 'translate(' + margin.left + ',' + vertical_vis_spacing + ')')
+      .append('g')
 
   function row(d) {
       return {
@@ -132,6 +151,7 @@
       var n = data.length
 
       //////////////////////// external svg ///////////////////////////////////////
+      /*
       // Programmatically load svgs
       d3.xml("./static/shape_elements/yellow_line.svg").mimeType("image/svg+xml").get(function(error, xml) {
         if (error) throw error;
@@ -176,7 +196,7 @@
                     })
 
       });
-
+      */
       //////////////////////// external svg ///////////////////////////////////////
 
       x_min = Math.min.apply(Math, data.map(x => x.x_val));
@@ -202,16 +222,15 @@
         //.call(d3.axisLeft(y));
 
       // Add dots
-      /*
       svg.append('g')
         .selectAll("dot")
         .data(data)
         .enter()
         .append("circle")
-          .attr("cx", function (d) { return x(d.x_val); } )
-          .attr("cy", function (d) { return y(d.y_val); } )
-          .attr("r",  .7)
-          .style("fill", "#69b3a2")
+          .attr("cx", function (d) { return x(radial_scale_factor*d.x_val); } )
+          .attr("cy", function (d) { return y(radial_scale_factor*d.y_val); } )
+          .attr("r",  dot_radius)
+          .style("fill", dot_fill)
         .on("mouseover", function(d) {    
             div.transition()    
                 .duration(200)    
@@ -225,21 +244,21 @@
                 .duration(500)    
                 .style("opacity", 0);
             })
-            */
   });
 
-  d3.csv('./static/csv/ash_wednesday.csv', row, function(error, data) {
+  d3.csv('./static/csv/burnt_norton.csv', row, function(error, data) {
       if (error) throw error;
       console.log(data)
       var n = data.length
 
       //////////////////////// external svg ///////////////////////////////////////
+      /*
       // Programmatically define div
-      /*for (i=0; i < n; i++){
-        d3.select("body")
-            .append("div")
-            .attr("class", "yellow-line-div");
-      }*/
+      //for (i=0; i < n; i++){
+      //  d3.select("body")
+      //      .append("div")
+      //      .attr("class", "yellow-line-div");
+      //}
       // Programmatically load svgs
       d3.xml("./static/shape_elements/white_line.svg").mimeType("image/svg+xml").get(function(error, xml) {
         if (error) throw error;
@@ -285,6 +304,61 @@
                     })
 
       });
+      */
+      //////////////////////// external svg ///////////////////////////////////////
+
+      x_min = Math.min.apply(Math, data.map(x => x.x_val));
+      x_max = Math.max.apply(Math, data.map(x => x.x_val));
+      y_min = Math.min.apply(Math, data.map(x => x.y_val));
+      y_max = Math.max.apply(Math, data.map(x => x.y_val));
+
+
+      // Scatterplot
+      // Add X axis
+      var x = d3.scaleLinear()
+        .domain([x_min, x_max])
+        .range([ 0, width ]);
+      svg2.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        //.call(d3.axisBottom(x));
+
+      // Add Y axis
+      var y = d3.scaleLinear()
+        .domain([y_min, y_max])
+        .range([ height, 0]);
+      svg2.append("g")
+        //.call(d3.axisLeft(y));
+
+      // Add dots
+      svg2.append('g')
+        .selectAll("dot")
+        .data(data)
+        .enter()
+        .append("circle")
+          .attr("cx", function (d) { return x(radial_scale_factor*d.x_val); } )
+          .attr("cy", function (d) { return y(radial_scale_factor*d.y_val); } )
+          .attr("r",  dot_radius)
+          .style("fill", dot_fill)
+        .on("mouseover", function(d) {    
+            div.transition()    
+                .duration(200)    
+                .style("opacity", .9);    
+            div .html(d.word + "<br/>")  
+                .style("left", (d3.event.pageX + 15) + "px")   
+                .style("top", (d3.event.pageY - 15) + "px");  
+            })          
+        .on("mouseout", function(d) {   
+            div.transition()    
+                .duration(500)    
+                .style("opacity", 0);
+            })
+            
+  });
+
+d3.csv('./static/csv/little_gidding.csv', row, function(error, data) {
+      if (error) throw error;
+      console.log(data)
+      var n = data.length
 
       //////////////////////// external svg ///////////////////////////////////////
 
@@ -299,7 +373,7 @@
       var x = d3.scaleLinear()
         .domain([x_min, x_max])
         .range([ 0, width ]);
-      svg.append("g")
+      svg3.append("g")
         .attr("transform", "translate(0," + height + ")")
         //.call(d3.axisBottom(x));
 
@@ -307,20 +381,19 @@
       var y = d3.scaleLinear()
         .domain([y_min, y_max])
         .range([ height, 0]);
-      svg.append("g")
+      svg3.append("g")
         //.call(d3.axisLeft(y));
 
       // Add dots
-      /*
-      svg.append('g')
+      svg3.append('g')
         .selectAll("dot")
         .data(data)
         .enter()
         .append("circle")
-          .attr("cx", function (d) { return x(d.x_val); } )
-          .attr("cy", function (d) { return y(d.y_val); } )
-          .attr("r",  .7)
-          .style("fill", "#69b3a2")
+          .attr("cx", function (d) { return x(radial_scale_factor*d.x_val); } )
+          .attr("cy", function (d) { return y(radial_scale_factor*d.y_val); } )
+          .attr("r",  dot_radius)
+          .style("fill", dot_fill)
         .on("mouseover", function(d) {    
             div.transition()    
                 .duration(200)    
@@ -334,7 +407,60 @@
                 .duration(500)    
                 .style("opacity", 0);
             })
-            */
+  });
+
+d3.csv('./static/csv/dry_salvages.csv', row, function(error, data) {
+      if (error) throw error;
+      console.log(data)
+      var n = data.length
+
+      //////////////////////// external svg ///////////////////////////////////////
+
+      x_min = Math.min.apply(Math, data.map(x => x.x_val));
+      x_max = Math.max.apply(Math, data.map(x => x.x_val));
+      y_min = Math.min.apply(Math, data.map(x => x.y_val));
+      y_max = Math.max.apply(Math, data.map(x => x.y_val));
+
+
+      // Scatterplot
+      // Add X axis
+      var x = d3.scaleLinear()
+        .domain([x_min, x_max])
+        .range([ 0, width ]);
+      svg4.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        //.call(d3.axisBottom(x));
+
+      // Add Y axis
+      var y = d3.scaleLinear()
+        .domain([y_min, y_max])
+        .range([ height, 0]);
+      svg4.append("g")
+        //.call(d3.axisLeft(y));
+
+      // Add dots
+      svg4.append('g')
+        .selectAll("dot")
+        .data(data)
+        .enter()
+        .append("circle")
+          .attr("cx", function (d) { return x(radial_scale_factor*d.x_val); } )
+          .attr("cy", function (d) { return y(radial_scale_factor*d.y_val); } )
+          .attr("r",  dot_radius)
+          .style("fill", dot_fill)
+        .on("mouseover", function(d) {    
+            div.transition()    
+                .duration(200)    
+                .style("opacity", .9);    
+            div .html(d.word + "<br/>")  
+                .style("left", (d3.event.pageX + 15) + "px")   
+                .style("top", (d3.event.pageY - 15) + "px");  
+            })          
+        .on("mouseout", function(d) {   
+            div.transition()    
+                .duration(500)    
+                .style("opacity", 0);
+            })
   });
 
   

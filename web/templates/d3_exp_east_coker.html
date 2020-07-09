@@ -20,7 +20,9 @@
       font-family:"avenir next", Arial, sans-serif;
       font-size: var(--responsive-font-size);
       color: black;
-      background: #07006b;
+      /*background: #07006b;
+      background: #fffcf4;*/
+      background: #f8f0e4;
     }
     input:focus {
       outline:none;
@@ -76,7 +78,7 @@
 </head>
 
 <body>
-<p id="title">east coker</p> 
+<<p id="title"></p> 
 <div id="vis"></div>
 <div id="svg-vis"></div>
 
@@ -111,22 +113,22 @@
 
   var op = 0.9
 
-    d3.csv('./static/csv/east_coker.csv', row, function(error, data) {
+    d3.csv('./static/csv/dry_salvages.csv', row, function(error, data) {
       if (error) throw error;
       console.log(data)
       var n = data.length
 
       //////////////////////// external svg ///////////////////////////////////////
       // Programmatically load svgs
-      d3.xml("./static/shape_elements/white_line.svg").mimeType("image/svg+xml").get(function(error, xml) {
+      d3.xml("./static/shape_elements/yellow_line.svg").mimeType("image/svg+xml").get(function(error, xml) {
         if (error) throw error;
 
         //d3.selectAll(".yellow-line-div").nodes().forEach(n => {
           let svgNode = xml.getElementsByTagName("svg")[0];
           //n.appendChild(svgNode.cloneNode(true))
         //})
-        //scale = 23000
-        scale = 19000
+        scale = 23000
+        //scale = 19000
         d3.select("#svg-vis")
                   //.selectAll("star")
                   .data(data)
