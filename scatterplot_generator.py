@@ -103,7 +103,6 @@ for poem in poems:
 	 		#	temp.append(j.lower()) 
 	 	data.append(temp)
 
-
 	sentences = data
 
 
@@ -177,7 +176,10 @@ for poem in poems:
 		export_svgs(p, filename=f"./individual_training/{poem}.svg")
 		print(f"Writing ./individual_training/{poem}.svg...")
 
+
 total_words_unique = set(total_words)
+df = pd.DataFrame(total_words_unique,columns=['word'])
+df.to_csv('./all_words.csv')
 print(f"Total unique words in this corpus {len(total_words_unique)}")
 json_out = []
 num_cols = 63
@@ -194,11 +196,46 @@ for word in total_words_unique:
 		'word': word,
 		'col': col_count,
 		'row': row_count,
-		'count': total_words.count(word)
+		'count': total_words.count(word),
+		'poems_that_use': [],
+		'per_poem_count': []
 		})
 	row_count = row_count+1
 
-print(json.dumps(json_out))
+for poem in poems:
+	data = []
+	temp = []
+	sentences = []
+	s = []
+	sample = open(f"./data/{poem}.txt", "r") 
+	s = sample.read() 
+
+	# Replaces escape character with space 
+	f = s.replace("\n", " ") 
+	
+	# iterate through each sentence in the file 
+	for i in sent_tokenize(f): 
+	 	# tokenize the sentence into words 
+	 	for j in word_tokenize(i):
+	 		j = j.lower()
+	 		stems = wn._morphy(j, wn.NOUN)
+	 		if len(stems) >= 1:
+	 			j = stems[0]
+	 		if j.isalnum() and not j.lower() in stop_words and j not in ignore_words:
+	 			temp.append(j)
+	 			total_words.append(j)
+	 		#if j.isalnum() and not j.lower() in stop_words:
+	 		#	temp.append(j.lower()) 
+	 	data.append(temp)
+
+	sentences = data
+	uniques = set(data[0])
+	for word in uniques:
+		for item in json_out:
+			if item['word'] == word:
+				item['poems_that_use'].append(poem)
+				item['per_poem_count'].append({'poem': poem, 'per_poem_count': data[0].count(word)})
+
 with open(f'./web/static/all_words.json', 'w') as outfile:
         json.dump(json_out, outfile)
         outfile.close()

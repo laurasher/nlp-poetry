@@ -18,7 +18,8 @@
     }
     body {
       font: 10px sans-serif;
-      background: #f8f0e4;
+      /*background: #f8f0e4;*/
+      background: white;
     }
     input:focus {
       outline:none;
@@ -83,9 +84,11 @@ div.tooltip {
 <div id="svg-vis"></div>
 
 <script>
-  var margin = { top: 10, right: 10, bottom: 10, left: 10 },
-    width = 1500 - margin.left - margin.right,
-    height = 900 - margin.top - margin.bottom;
+  var poem = 'burnt_norton';
+
+  var margin = { top: 10, right: 10, bottom: 30, left: 30 },
+    width = 1600 - margin.left - margin.right,
+    height = 800 - margin.top - margin.bottom;
 
 
   var svg = d3.select('body').append('svg')
@@ -100,8 +103,13 @@ div.tooltip {
       .attr("class", "tooltip")       
       .style("opacity", 0);
 
+  function key(d){return d.word}
+
   d3.json('./static/all_words.json', function(data) {
       console.log(data)
+
+      red_data = data.filter(x => x.poems_that_use.includes(poem))
+      console.log(red_data)
 
       var x = d3.scaleLinear()
         .domain([0, d3.max(data, function(d) { return d.col;}) ])
@@ -115,17 +123,18 @@ div.tooltip {
         .attr("class", "plot")
 
       var dots = plot.selectAll(".scatterdot")
-        .data(data);
+        .data(data, key);
 
       dots.enter()
         .append("circle")
           .attr("class", "scatterdot")
-          .attr("r", function (d, i) { return d.count; })
+          .style("opacity", function (d, i) { return 1 - 1.5/(1.2+Math.log10(d.count));})
+          .attr("r", function (d, i) {
+            return Math.ceil(d.count/5)+1;})
+          .style('stroke', 'none')
           .style('fill', 'lightgray')
-          //.style('stroke', 'darkgray')
-          .style("opacity", 0.5)
-          .attr("cx", function (d, i) { return x(d.col); } )
-          .attr("cy", function (d, i) { return y(d.row); } )
+          .attr("cx", function (d, i) { return x(d.col); })
+          .attr("cy", function (d, i) { return y(d.row); })
         .on("mouseover", function(d) { 
             d3.select(this)
               .style('stroke', 'darkgray');   
@@ -133,6 +142,39 @@ div.tooltip {
                 .duration(200)    
                 .style("opacity", .9);    
             div .html("<b>" + d.word + "</b><br/>"  + d.count)  
+                .style("left", (d3.event.pageX) + "px")   
+                .style("top", (d3.event.pageY - 28) + "px");  
+            })          
+        .on("mouseout", function(d) {
+            d3.select(this)
+              .style('stroke', 'none'); 
+            div.transition()    
+                .duration(500)    
+                .style("opacity", 0); 
+        });
+
+      var red_dots = plot.selectAll(".scatterdot-red")
+        .data(red_data);
+
+      red_dots.enter()
+        .append("circle")
+          .attr("class", "scatterdot-red")
+          .style("opacity", function (d, i) {
+            tmp = d.per_poem_count.filter(x=>x.poem==poem)
+            return (tmp[0].per_poem_count>=8) ?  1 : 0.2; 
+          })
+          .attr("r", function (d, i) {return Math.ceil(d.count/5)+1;})
+          .style('fill', '#B56548')
+          .style('stroke', '#B56548')
+          .attr("cx", function (d, i) { return x(d.col); })
+          .attr("cy", function (d, i) { return y(d.row); })
+        .on("mouseover", function(d) { 
+            d3.select(this)
+              .style('stroke', 'darkgray');   
+            div.transition()    
+                .duration(200)    
+                .style("opacity", .9);    
+            div .html("<b>" + d.word + "</b><br/>"  + d.per_poem_count.filter(x=>x.poem==poem)[0].per_poem_count)  
                 .style("left", (d3.event.pageX) + "px")   
                 .style("top", (d3.event.pageY - 28) + "px");  
             })          
