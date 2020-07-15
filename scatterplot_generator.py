@@ -46,8 +46,7 @@ def style_plots(fig):
     fig.title.text_font_size = "9pt"
     fig.title.text_font_style = "bold"
     fig.title.text_color = "#394d7e"
-    #fig.title.text_align = "middle"
-    #fig.title.visible = None
+    fig.title.visible = None
     fig.yaxis.major_label_text_color = 'white'
     fig.xaxis.major_label_text_color = 'white'
     fig.xaxis.major_label_text_font_size = '14pt'
@@ -59,8 +58,9 @@ def style_plots(fig):
 #poems = ['ash_wednesday','dry_salvages','the_waste_land','east_coker','little_gidding','burnt_norton','choruses_from_the_rock','the_hollow_men', 
 #'the_country_of_marriage', 'the_peace_of_wild_things', 'what_we_need_is_here', 'the_man_born_to_farming', 'sabbaths_2001', 'silence', 'the_wish_to_be_generous', 'water'
 #]
-poems = ['ash_wednesday','dry_salvages','the_waste_land','east_coker','little_gidding','burnt_norton',
-'choruses_from_the_rock','the_hollow_men','gerontion','animula','portrait_of_a_lady','whispers_of_immortality']
+#poems = ['ash_wednesday','dry_salvages','the_waste_land','east_coker','little_gidding','burnt_norton',
+#'choruses_from_the_rock','the_hollow_men','gerontion','animula','portrait_of_a_lady','whispers_of_immortality']
+poems = ['dry_salvages','east_coker','little_gidding','burnt_norton']
 pub_year_df = pd.read_csv(f'./data/poem_pub_year.csv')
 
 data = []
@@ -120,13 +120,19 @@ for poem in poems:
 	pca = PCA(n_components=2)
 	result = pca.fit_transform(X)
 
-	word_search_list = ['water','flower','desert','shrubbery','tree','juniper','daffodil','hyacinth']
+	word_search_list = ['sea']
 
-	words_df = pd.DataFrame({'words': words, 'color': '#394d7e', 'size': 2})
+	# Non selected word colors
+	#words_df = pd.DataFrame({'words': words, 'color': '#394d7e', 'size': 2})
+	words_df = pd.DataFrame({'words': words, 'color': '#DBA68F', 'size': 2})
 	
+	# Color selected words
 	#words_df.loc[words_df['words'].str.contains('|'.join(word_search_list)), 'color'] = '#cf6233'
-	words_df.loc[words_df['words'].str.contains('|'.join(word_search_list)), 'color'] = '#5D7D2C'
-	words_df.loc[words_df['words'].str.contains('|'.join(word_search_list)), 'size'] = 20
+	#words_df.loc[words_df['words'].str.contains('|'.join(word_search_list)), 'color'] = '#5D7D2C'
+	#words_df.loc[words_df['words'].str.match('|'.join(word_search_list)), 'color'] = '#B56548'
+	#words_df.loc[words_df['words'].str.match('|'.join(word_search_list)), 'size'] = 20
+	words_df.loc[words_df['words'] == 'fire', 'color'] = '#B56548' 
+	words_df.loc[words_df['words'] == 'fire', 'size'] = 20
 
 	###### Bokeh plot
 	source = ColumnDataSource(data=dict(x=result[:, 0], y=result[:, 1], word=words, 

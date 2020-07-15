@@ -41,9 +41,21 @@ def eliot():
 def berry():
 	return render_template("berry.html")
 
-@app.route('/all_words', methods=['GET'])
-def all_words():
-    return render_template("all_words.html")
+@app.route('/all_words_burnt_norton', methods=['GET'])
+def all_words_burnt_norton():
+    return render_template("all_words_burnt_norton.html")
+
+@app.route('/all_words_east_coker', methods=['GET'])
+def all_words_east_coker():
+    return render_template("all_words_east_coker.html")
+
+@app.route('/all_words_little_gidding', methods=['GET'])
+def all_words_little_gidding():
+    return render_template("all_words_little_gidding.html")
+
+@app.route('/all_words_dry_salvages', methods=['GET'])
+def all_words_dry_salvages():
+    return render_template("all_words_dry_salvages.html")
 '''
 @app.route('/favicon.ico') 
 def favicon(): 
