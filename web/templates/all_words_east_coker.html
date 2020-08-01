@@ -132,7 +132,8 @@ body{
       dots.enter()
         .append("circle")
           .attr("class", "scatterdot")
-          .style("opacity", function (d, i) { return 1 - 1.5/(1.2+Math.log10(d.count));})
+          //.style("opacity", function (d, i) { return 1 - 1.5/(1.2+Math.log10(d.count));})
+          .style("opacity", function (d, i) { return 10 - 1.5/(1.2+Math.log10(d.count));})
           .attr("r", function (d, i) {
             return Math.ceil(d.count/5)+1;})
           .style('stroke', 'lightgray')

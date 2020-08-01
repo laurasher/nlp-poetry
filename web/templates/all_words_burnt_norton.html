@@ -132,9 +132,11 @@ body{
       dots.enter()
         .append("circle")
           .attr("class", "scatterdot")
-          .style("opacity", function (d, i) { return 1 - 1.5/(1.2+Math.log10(d.count));})
+          //.style("opacity", function (d, i) { return 1 - 1.5/(1.2+Math.log10(d.count));})
+          .style("opacity", function (d, i) { return 10 - 1.5/(1.2+Math.log10(d.count));})
           .attr("r", function (d, i) {
             return Math.ceil(d.count/5)+1;})
+            //return Math.ceil(d.count/5)+10;})
           .style('stroke', 'lightgray')
           .style('fill', 'lightgray')
           .attr("cx", function (d, i) { return x(d.col); })
@@ -145,7 +147,7 @@ body{
             div.transition()    
                 .duration(200)    
                 .style("opacity", .9);    
-            div .html("<b>" + d.word + "</b><br/>"  + d.count)  
+            div .html("<b>" + d.word + "</b><br/>"  + d.count + "</b><br/>"  + d.category)  
                 .style("left", (d3.event.pageX) + "px")   
                 .style("top", (d3.event.pageY - 28) + "px");  
             })          
@@ -178,7 +180,7 @@ body{
             div.transition()    
                 .duration(200)    
                 .style("opacity", .9);    
-            div .html("<b>" + d.word + "</b><br/>"  + d.per_poem_count.filter(x=>x.poem==poem)[0].per_poem_count)  
+            div .html("<b>" + d.word + "</b><br/>"  + d.per_poem_count.filter(x=>x.poem==poem)[0].per_poem_count + "</b><br/>"  + d.category)  
                 .style("left", (d3.event.pageX) + "px")   
                 .style("top", (d3.event.pageY - 28) + "px");  
             })          
