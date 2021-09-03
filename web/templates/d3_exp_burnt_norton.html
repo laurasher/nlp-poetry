@@ -20,7 +20,8 @@
       font-family:"avenir next", Arial, sans-serif;
       font-size: var(--responsive-font-size);
       color: black;
-      background: #07006b;
+      /*background: #07006b;*/
+      background: white;
     }
     input:focus {
       outline:none;
@@ -85,23 +86,27 @@
     width = 200 - margin.left - margin.right,
     height = 200 - margin.top - margin.bottom;
 
-
   var svg = d3.select('body').append('svg')
           .attr('width', width + margin.left + margin.right)
           .attr('height', height + margin.top + margin.bottom)
       .append('g')
           .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
+  var includedWords = ['time', 'fire', 'dark', 'sea', 'past', 'present', 'world', 'light', 'death']
+
   function row(d) {
-      return {
-          x_val: +d.x_val,
-          y_val: +d.y_val,
-          word: d.Word,
-      };
+      if (includedWords.includes(d.Word)) {
+          return {
+              x_val: +d.x_val,
+              y_val: +d.y_val,
+              word: d.Word,
+          };
+      }
   }
 
   function getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max));
+    {#return Math.floor(Math.random() * Math.floor(max));#}
+      return 35
   }
 
   // Define the div for the tooltip
@@ -118,15 +123,14 @@
 
       //////////////////////// external svg ///////////////////////////////////////
       // Programmatically load svgs
-      d3.xml("./static/shape_elements/white_line.svg").mimeType("image/svg+xml").get(function(error, xml) {
+      d3.xml("./static/shape_elements/black_rect.svg").mimeType("image/svg+xml").get(function(error, xml) {
         if (error) throw error;
 
         //d3.selectAll(".yellow-line-div").nodes().forEach(n => {
           let svgNode = xml.getElementsByTagName("svg")[0];
           //n.appendChild(svgNode.cloneNode(true))
         //})
-        //scale = 23000
-        scale = 19000
+        scale = 23000
         d3.select("#svg-vis")
                   //.selectAll("star")
                   .data(data)
@@ -139,7 +143,8 @@
                     rot_scale = 2500
                     size_scale = 15
                     rot = getRandomInt(rot_scale*y_max)
-                    size = getRandomInt(size_scale)/12 + 1
+                    size = getRandomInt(size_scale)/10 + 1
+                    {#  size = (d.x_val/d.y_val)*3 + 1#}
                     return "scale(" + size + ") rotate(" + scale*d.x_val + ") translate(" + scale*d.x_val + "," + scale*d.y_val + ")"
                     //return "translate(" + scale*d.x_val + "," + scale*d.y_val + ")"
                   })

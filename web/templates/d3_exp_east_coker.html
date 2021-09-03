@@ -22,7 +22,8 @@
       color: black;
       /*background: #07006b;
       background: #fffcf4;*/
-      background: #f8f0e4;
+      /*background: #f8f0e4;*/
+      background: white;
     }
     input:focus {
       outline:none;
@@ -94,16 +95,21 @@
       .append('g')
           .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
+  var includedWords = ['time', 'fire', 'dark', 'sea', 'past', 'present', 'world', 'light', 'death']
+
   function row(d) {
-      return {
-          x_val: +d.x_val,
-          y_val: +d.y_val,
-          word: d.Word,
-      };
+      if (includedWords.includes(d.Word)) {
+          return {
+              x_val: +d.x_val,
+              y_val: +d.y_val,
+              word: d.Word,
+          };
+      }
   }
 
   function getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max));
+    {#return Math.floor(Math.random() * Math.floor(max));#}
+      return 1
   }
 
   // Define the div for the tooltip
@@ -120,7 +126,9 @@
 
       //////////////////////// external svg ///////////////////////////////////////
       // Programmatically load svgs
-      d3.xml("./static/shape_elements/yellow_line.svg").mimeType("image/svg+xml").get(function(error, xml) {
+      // d3.xml("./static/shape_elements/yellow_line.svg").mimeType("image/svg+xml").get(function(error, xml) {
+      d3.xml("./static/shape_elements/black_rect.svg").mimeType("image/svg+xml").get(function(error, xml) {
+
         if (error) throw error;
 
         //d3.selectAll(".yellow-line-div").nodes().forEach(n => {
@@ -128,7 +136,7 @@
           //n.appendChild(svgNode.cloneNode(true))
         //})
         scale = 23000
-        //scale = 19000
+        {#scale = 10000#}
         d3.select("#svg-vis")
                   //.selectAll("star")
                   .data(data)
@@ -142,6 +150,7 @@
                     size_scale = 15
                     rot = getRandomInt(rot_scale*y_max)
                     size = getRandomInt(size_scale)/12 + 1
+                    {#  size = (d.x_val/d.y_val)*3 + 1#}
                     return "scale(" + size + ") rotate(" + scale*d.x_val + ") translate(" + scale*d.x_val + "," + scale*d.y_val + ")"
                     //return "translate(" + scale*d.x_val + "," + scale*d.y_val + ")"
                   })
